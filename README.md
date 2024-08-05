@@ -7,5 +7,15 @@
 ```
 flutter pub get
 flutter run
+
+// 빌드 실패 시
+flutter clean
+flutter pub get
+flutter run
 ```
+
+## 코드 컨벤션
+1. dart 파일명: snake case
+2. class명: pascal case
+
 
