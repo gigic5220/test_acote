@@ -6,7 +6,23 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container()
+      body: ListView.separated(
+        itemBuilder: (context, index) {
+          return _userListItem();
+        },
+        separatorBuilder: (context, index) {
+          return Container();
+        },
+        itemCount: 30
+      )
+    );
+  }
+
+  Widget _userListItem() {
+    return Container(
+      child: Column(
+
+      ),
     );
   }
 }
