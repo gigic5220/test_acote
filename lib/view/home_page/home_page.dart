@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:test_acote/controller/HomePageController.dart';
 import 'package:test_acote/model/user.dart';
+import 'package:test_acote/widget/common/custom_cached_network_image_widget.dart';
 
 class HomePage extends GetView<HomePageController> {
   const HomePage({super.key});
@@ -19,67 +20,97 @@ class HomePage extends GetView<HomePageController> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: ListView.separated(
-          itemBuilder: (context, index) => _userListItem(user: controller.getUserList[index]),
-          separatorBuilder: (context, index) {
-            if ((index + 1) % controller.getAdBannerIndex == 0) {
-              return _adBannerWidget(bannerUrl: controller.getAdBannerUrl());
-            } else {
-              return const SizedBox(height: 20);
-            }
-          },
-          itemCount: controller.getUserList.length
-        )
+        child: Obx(() {
+          return ListView.builder(
+            controller: controller.scrollController,
+            itemBuilder: (context, index) => _userListItem(
+              user: controller.getUserList[index],
+              userListItemIndex: index,
+              adBannerLocationIndex: controller.getAdBannerLocationIndex,
+              adBannerImageUrl: controller.getAdBannerImageUrl(),
+              onTapUserItem: () => controller.onTapUserItem(userId: controller.getUserList[index].id),
+              onTapAdBanner: () => controller.onTapAdBanner(targetUrl: controller.getAdBannerBrowserTargetUrl())
+            ),
+            itemCount: controller.getUserList.length
+          );
+        })
       )
     );
   }
 
   Widget _userListItem({
-    required User user
+    required User user,
+    required int userListItemIndex,
+    required int adBannerLocationIndex,
+    required String adBannerImageUrl,
+    required void Function() onTapUserItem,
+    required void Function() onTapAdBanner
   }) {
-    return Row(
+    return Column(
       children: [
-        ClipOval(
-          child: SizedBox(
-            width: 40,
-            height: 40,
-            child: Image.network(
-              user.avatarUrl,
-              fit: BoxFit.cover,
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: onTapUserItem,
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 20),
+            child: Row(
+              children: [
+                ClipOval(
+                  child: SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: CustomCachedNetworkImageWidget(
+                      imageUrl: user.avatarUrl,
+                    )
+                  ),
+                ),
+                const SizedBox(width: 15),
+                Column(
+                  children: [
+                    Text(
+                      user.login,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700
+                      ),
+                    )
+                  ],
+                )
+              ],
             ),
           ),
         ),
-        const SizedBox(width: 15),
-        Column(
-          children: [
-            Text(
-              user.login,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w700
-              ),
+        if ((userListItemIndex + 1) % adBannerLocationIndex == 0) ...[
+          Container(
+            margin: const EdgeInsets.only(bottom: 20),
+            child: _adBannerWidget(
+              onTapAdBanner: onTapAdBanner,
+              bannerUrl: adBannerImageUrl
             )
-          ],
-        )
+          )
+        ]
       ],
     );
   }
 
   Widget _adBannerWidget({
-    required String bannerUrl
+    required String bannerUrl,
+    required void Function() onTapAdBanner
   }) {
     final double imageRatio = 100 / 500;
 
     return LayoutBuilder(
       builder: (context, constraints) {
         final double maxWidth = constraints.maxWidth;
-        return Container(
-          margin: const EdgeInsets.symmetric(vertical: 10),
-          width: maxWidth,
-          height: maxWidth * imageRatio,
-          child: Image.network(
-            bannerUrl,
-            fit: BoxFit.cover,
+        return GestureDetector(
+          onTap: onTapAdBanner,
+          child: Container(
+            margin: const EdgeInsets.symmetric(vertical: 10),
+            width: maxWidth,
+            height: maxWidth * imageRatio,
+            child: CustomCachedNetworkImageWidget(
+              imageUrl: bannerUrl,
+            )
           )
         );
       }

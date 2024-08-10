@@ -1,12 +1,14 @@
 import 'package:get/get.dart';
 
 class GithubApi extends GetConnect {
-  getUserList() async {
-    final Response response = await get('https://api.github.com/users');
+  Future<List<dynamic>> getUserList({
+    int? sincePagingParameter
+  }) async {
+    final Response response = await get('https://api.github.com/users${sincePagingParameter != null ? '?since=$sincePagingParameter' : ''}');
     if (response.hasError) {
-      return 'error';
+      return [];
     } else {
-      return 'result';
+      return response.body;
     }
   }
 }
