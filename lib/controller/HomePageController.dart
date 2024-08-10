@@ -15,12 +15,15 @@ class HomePageController extends GetxController {
 
   final RxList<User> _userList = <User>[].obs;
   final RxBool _isUserListLoading = false.obs;
+  final RxBool _isInitialDataLoading = true.obs;
 
   List<User> get getUserList => _userList;
   bool get getIsUserListLoading => _isUserListLoading.value;
+  bool get getIsInitialDataLoading => _isInitialDataLoading.value;
 
   set setUserList(List<User> value) => _userList.value = value;
   set setIsUserListLoading(bool value) => _isUserListLoading.value = value;
+  set setIsInitialDataLoading(bool value) => _isInitialDataLoading.value = value;
 
   @override
   void onInit() async {
@@ -41,7 +44,13 @@ class HomePageController extends GetxController {
   String getAdBannerImageUrl() => 'https://via.placeholder.com/500x100?text=ad';
   String getAdBannerBrowserTargetUrl() => 'https://taxrefundgo.kr';
 
-  void setInitialData() async => await setUserListData();
+  void setInitialData() async {
+    try {
+      await setUserListData();
+    } finally {
+      setIsInitialDataLoading = false;
+    }
+  }
 
   Future<void> setUserListData({
     int? userListSincePagingParameter
@@ -50,9 +59,7 @@ class HomePageController extends GetxController {
     try {
       setIsUserListLoading = true;
       final List<User> userListData = await githubRepository.getUserList(sincePagingParameter: userListSincePagingParameter);
-      if (userListData.isNotEmpty) {
-        _userListSincePagingParameter = userListData[userListData.length - 1].id;
-      }
+      _userListSincePagingParameter = userListData.length == 30 ? userListData[userListData.length - 1].id : null;
       if (userListSincePagingParameter != null) {
         setUserList = [...getUserList, ... userListData];
       } else {
@@ -66,8 +73,8 @@ class HomePageController extends GetxController {
   void userListPaging({
     required ScrollController controller
   }) {
-    if (controller.offset >= controller.position.maxScrollExtent) {
-      if (_userListSincePagingParameter != null) {
+    if (controller.offset >= controller.position.maxScrollExtent - 50) {
+      if (_userListSincePagingParameter != null && !getIsUserListLoading) {
         setUserListData(userListSincePagingParameter: _userListSincePagingParameter);
       }
     }

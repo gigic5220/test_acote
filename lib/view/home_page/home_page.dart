@@ -3,7 +3,9 @@ import 'package:get/get.dart';
 import 'package:test_acote/controller/HomePageController.dart';
 import 'package:test_acote/layout/custom_appbar.dart';
 import 'package:test_acote/model/user.dart';
+import 'package:test_acote/widget/common/common_paging_loading_widget.dart';
 import 'package:test_acote/widget/common/custom_cached_network_image_widget.dart';
+import 'package:test_acote/widget/common/loading_spinner_widget.dart';
 
 class HomePage extends GetView<HomePageController> {
   const HomePage({super.key});
@@ -16,20 +18,45 @@ class HomePage extends GetView<HomePageController> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Obx(() {
-          return ListView.builder(
-            controller: controller.scrollController,
-            itemBuilder: (context, index) => _userListItem(
-              user: controller.getUserList[index],
-              userListItemIndex: index,
-              adBannerLocationIndex: controller.getAdBannerLocationIndex,
-              adBannerImageUrl: controller.getAdBannerImageUrl(),
-              onTapUserItem: () => controller.onTapUserItem(userName: controller.getUserList[index].login),
-              onTapAdBanner: () => controller.onTapAdBanner(targetUrl: controller.getAdBannerBrowserTargetUrl())
-            ),
-            itemCount: controller.getUserList.length
-          );
-        })
+        child: Stack(
+          children: [
+            Obx(() {
+              if (controller.getIsInitialDataLoading) {
+                return const Center(
+                  child: LoadingSpinnerWidget(),
+                );
+              } else {
+                return ListView.builder(
+                  controller: controller.scrollController,
+                  itemBuilder: (context, index) => _userListItem(
+                    user: controller.getUserList[index],
+                    userListItemIndex: index,
+                    adBannerLocationIndex: controller.getAdBannerLocationIndex,
+                    adBannerImageUrl: controller.getAdBannerImageUrl(),
+                    onTapUserItem: () => controller.onTapUserItem(userName: controller.getUserList[index].login),
+                    onTapAdBanner: () => controller.onTapAdBanner(targetUrl: controller.getAdBannerBrowserTargetUrl())
+                  ),
+                  itemCount: controller.getUserList.length
+                );
+              }
+            }),
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 30,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Obx(() {
+                  if (!controller.getIsInitialDataLoading && controller.getIsUserListLoading) {
+                    return const CommonPagingLoadingWidget();
+                  } else {
+                    return Container();
+                  }
+                })
+              )
+            )
+          ],
+        )
       )
     );
   }
