@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:test_acote/controller/DetailPageController.dart';
 import 'package:test_acote/layout/custom_appbar.dart';
 import 'package:test_acote/model/repository.dart';
+import 'package:test_acote/widget/common/common_paging_loading_widget.dart';
+import 'package:test_acote/widget/common/loading_spinner_widget.dart';
 
 class DetailPage extends GetView<DetailPageController> {
   const DetailPage({super.key});
@@ -31,19 +33,44 @@ class DetailPage extends GetView<DetailPageController> {
           ],
         ),
       ),
-      body: Obx(() {
-        return ListView.separated(
-          controller: controller.scrollController,
-          itemBuilder: (context, index) => _repositoryListItem(
-            repository: controller.getUserRepositoryList[index],
-          ),
-          separatorBuilder: (context, index) => Container(
-            height: 0.5,
-            color: Colors.grey
-          ),
-          itemCount: controller.getUserRepositoryList.length
-        );
-      })
+      body: Stack(
+        children: [
+          Obx(() {
+            if (controller.getIsInitialDataLoading) {
+              return const Center(
+                child: LoadingSpinnerWidget(),
+              );
+            } else {
+              return ListView.separated(
+                controller: controller.scrollController,
+                itemBuilder: (context, index) => _repositoryListItem(
+                  repository: controller.getUserRepositoryList[index],
+                ),
+                separatorBuilder: (context, index) => Container(
+                  height: 0.5,
+                  color: Colors.grey
+                ),
+                itemCount: controller.getUserRepositoryList.length
+              );
+            }
+          }),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 30,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Obx(() {
+                if (!controller.getIsInitialDataLoading && controller.getIsUserRepositoryListLoading) {
+                  return const CommonPagingLoadingWidget();
+                } else {
+                  return Container();
+                }
+              })
+            )
+          )
+        ]
+      )
     );
   }
 

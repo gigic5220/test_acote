@@ -10,19 +10,22 @@ class DetailPageController extends GetxController {
     required this.githubRepository
   });
   final ScrollController scrollController = ScrollController();
-  int _userRepositoryListSincePagingParameter = 1;
+  int? _userRepositoryListSincePagingParameter = 1;
 
   final RxList<Repository> _userRepositoryList = <Repository>[].obs;
   final RxnString _userName = RxnString(null);
   final RxBool _isUserRepositoryListLoading = false.obs;
+  final RxBool _isInitialDataLoading = true.obs;
 
   List<Repository> get getUserRepositoryList => _userRepositoryList;
   String? get getUserName => _userName.value;
   bool get getIsUserRepositoryListLoading => _isUserRepositoryListLoading.value;
+  bool get getIsInitialDataLoading => _isInitialDataLoading.value;
 
   set setUserRepositoryList(List<Repository> value) => _userRepositoryList.value = value;
   set setUserName(String? value) => _userName.value = value;
   set setIsUserRepositoryListLoading(bool value) => _isUserRepositoryListLoading.value = value;
+  set setIsInitialDataLoading(bool value) => _isInitialDataLoading.value = value;
 
   @override
   void onInit() async {
@@ -43,25 +46,35 @@ class DetailPageController extends GetxController {
 
   void setInitialData({
     required String userName
-  }) async => await setUserRepositoryListData(userName: userName);
+  }) async {
+    try {
+      await setUserRepositoryListData(
+        userName: userName,
+        userRepositoryListSincePagingParameter: 1
+      );
+    } finally {
+      setIsInitialDataLoading = false;
+    }
+  }
 
 
   Future<void> setUserRepositoryListData({
     required String userName,
-    int? userListSincePagingParameter
+    required int userRepositoryListSincePagingParameter
   }) async {
     if (getIsUserRepositoryListLoading) return;
     try {
       setIsUserRepositoryListLoading = true;
       final List<Repository> userRepositoryListData = await githubRepository.getUserRepositoryList(
         userName: userName,
-        pagePagingParameter: userListSincePagingParameter
+        pagePagingParameter: userRepositoryListSincePagingParameter
       );
-      if (userListSincePagingParameter != null) {
-        setUserRepositoryList = [...getUserRepositoryList, ... userRepositoryListData];
+      if (userRepositoryListData.length != 30) {
+        _userRepositoryListSincePagingParameter = null;
       } else {
-        setUserRepositoryList = userRepositoryListData;
+        _userRepositoryListSincePagingParameter = userRepositoryListSincePagingParameter;
       }
+      setUserRepositoryList = userRepositoryListSincePagingParameter == 1 ? userRepositoryListData : [...getUserRepositoryList, ... userRepositoryListData];
     } finally {
       setIsUserRepositoryListLoading = false;
     }
@@ -70,12 +83,11 @@ class DetailPageController extends GetxController {
   void userRepositoryListPaging({
     required ScrollController controller
   }) {
-    if (controller.offset >= controller.position.maxScrollExtent) {
-      if (getUserName != null) {
-        _userRepositoryListSincePagingParameter += 1;
+    if (controller.offset >= controller.position.maxScrollExtent - 50) {
+      if (getUserName != null && _userRepositoryListSincePagingParameter != null && !getIsUserRepositoryListLoading) {
         setUserRepositoryListData(
           userName: getUserName!,
-          userListSincePagingParameter: _userRepositoryListSincePagingParameter
+          userRepositoryListSincePagingParameter: _userRepositoryListSincePagingParameter! + 1
         );
       }
     }
