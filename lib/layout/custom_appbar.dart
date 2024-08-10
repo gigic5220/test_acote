@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CustomAppbar extends StatelessWidget implements PreferredSizeWidget{
-  final String title;
+  final dynamic title;
 
   const CustomAppbar({
     super.key,
@@ -25,12 +25,13 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget{
           ),
           onPressed: Get.back,
         ) : null,
-      title: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 20,
-        ),
-      ),
+      title: title is String ?
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 20,
+          ),
+        ) : title
     );
 }
 
