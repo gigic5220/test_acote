@@ -38,7 +38,6 @@ class DetailPage extends GetView<DetailPageController> {
             repository: controller.getUserRepositoryList[index],
           ),
           separatorBuilder: (context, index) => Container(
-            margin: const EdgeInsets.only(bottom: 14),
             height: 0.5,
             color: Colors.grey
           ),
@@ -56,6 +55,7 @@ class DetailPage extends GetView<DetailPageController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const SizedBox(height: 14),
           Text(
             repository.name,
             style: const TextStyle(

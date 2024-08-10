@@ -19,11 +19,11 @@ class GithubRepository extends GetxService {
 
   Future<List<Repository>> getUserRepositoryList({
     required String userName,
-    int? sincePagingParameter
+    int? pagePagingParameter
   }) async {
     final List<dynamic> repositoryListJson =  await githubApi.getUserRepositoryList(
       userName: userName,
-      sincePagingParameter: sincePagingParameter
+      pagePagingParameter: pagePagingParameter
     );
     return repositoryListJson.map((json) => Repository.fromJson(json)).toList();
   }

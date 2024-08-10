@@ -1,8 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:test_acote/model/mock/mock.dart';
 import 'package:test_acote/model/user.dart';
 import 'package:test_acote/repository/github_repository.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -32,16 +29,19 @@ class HomePageController extends GetxController {
     setInitialData();
   }
 
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
   //광고 배너표시 index
   int get getAdBannerLocationIndex => 10;
 
   String getAdBannerImageUrl() => 'https://via.placeholder.com/500x100?text=ad';
   String getAdBannerBrowserTargetUrl() => 'https://taxrefundgo.kr';
 
-  void setInitialData() async {
-    setUserList = MockData.MOCK_USER_LIST.map((mockData) => User.fromJson(jsonDecode(jsonEncode(mockData)))).toList(); //todo: api 호출 제한으로 기능 개발 완성 시 까지 유지
-    //await setUserListData();
-  }
+  void setInitialData() async => await setUserListData();
 
   Future<void> setUserListData({
     int? userListSincePagingParameter
@@ -53,7 +53,7 @@ class HomePageController extends GetxController {
       if (userListData.isNotEmpty) {
         _userListSincePagingParameter = userListData[userListData.length - 1].id;
       }
-      if (_userListSincePagingParameter != null) {
+      if (userListSincePagingParameter != null) {
         setUserList = [...getUserList, ... userListData];
       } else {
         setUserList = userListData;
@@ -75,7 +75,7 @@ class HomePageController extends GetxController {
 
   void scrollListener({
     required ScrollController controller
-  }) => userListPaging(controller: scrollController);
+  }) => userListPaging(controller: controller);
 
 
   void onTapUserItem({

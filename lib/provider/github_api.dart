@@ -14,9 +14,9 @@ class GithubApi extends GetConnect {
 
   Future<List<dynamic>> getUserRepositoryList({
     required String userName,
-    int? sincePagingParameter
+    int? pagePagingParameter = 1
   }) async {
-    final Response response = await get('https://api.github.com/users/$userName/repos${sincePagingParameter != null ? '?since=$sincePagingParameter' : ''}');
+    final Response response = await get('https://api.github.com/users/$userName/repos?page=$pagePagingParameter');
     if (response.hasError) {
       return [];
     } else {
