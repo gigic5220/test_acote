@@ -24,7 +24,7 @@ class HomePage extends GetView<HomePageController> {
               userListItemIndex: index,
               adBannerLocationIndex: controller.getAdBannerLocationIndex,
               adBannerImageUrl: controller.getAdBannerImageUrl(),
-              onTapUserItem: () => controller.onTapUserItem(userId: controller.getUserList[index].id),
+              onTapUserItem: () => controller.onTapUserItem(userName: controller.getUserList[index].login),
               onTapAdBanner: () => controller.onTapAdBanner(targetUrl: controller.getAdBannerBrowserTargetUrl())
             ),
             itemCount: controller.getUserList.length

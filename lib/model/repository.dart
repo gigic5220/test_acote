@@ -7,9 +7,9 @@ part 'repository.g.dart';
 class Repository with _$Repository {
   const factory Repository({
     required String name,
-    required String description,
+    required String? description,
     @JsonKey(name: 'stargazers_count') required int stargazersCount,
-    required String language,
+    required String? language,
   }) = _Repository;
 
   factory Repository.fromJson(Map<String, Object?> json) => _$RepositoryFromJson(json);

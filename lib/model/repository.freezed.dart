@@ -21,10 +21,10 @@ Repository _$RepositoryFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Repository {
   String get name => throw _privateConstructorUsedError;
-  String get description => throw _privateConstructorUsedError;
+  String? get description => throw _privateConstructorUsedError;
   @JsonKey(name: 'stargazers_count')
   int get stargazersCount => throw _privateConstructorUsedError;
-  String get language => throw _privateConstructorUsedError;
+  String? get language => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -40,9 +40,9 @@ abstract class $RepositoryCopyWith<$Res> {
   @useResult
   $Res call(
       {String name,
-      String description,
+      String? description,
       @JsonKey(name: 'stargazers_count') int stargazersCount,
-      String language});
+      String? language});
 }
 
 /// @nodoc
@@ -59,27 +59,27 @@ class _$RepositoryCopyWithImpl<$Res, $Val extends Repository>
   @override
   $Res call({
     Object? name = null,
-    Object? description = null,
+    Object? description = freezed,
     Object? stargazersCount = null,
-    Object? language = null,
+    Object? language = freezed,
   }) {
     return _then(_value.copyWith(
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      description: null == description
+      description: freezed == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       stargazersCount: null == stargazersCount
           ? _value.stargazersCount
           : stargazersCount // ignore: cast_nullable_to_non_nullable
               as int,
-      language: null == language
+      language: freezed == language
           ? _value.language
           : language // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
     ) as $Val);
   }
 }
@@ -94,9 +94,9 @@ abstract class _$$RepositoryImplCopyWith<$Res>
   @useResult
   $Res call(
       {String name,
-      String description,
+      String? description,
       @JsonKey(name: 'stargazers_count') int stargazersCount,
-      String language});
+      String? language});
 }
 
 /// @nodoc
@@ -111,27 +111,27 @@ class __$$RepositoryImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? name = null,
-    Object? description = null,
+    Object? description = freezed,
     Object? stargazersCount = null,
-    Object? language = null,
+    Object? language = freezed,
   }) {
     return _then(_$RepositoryImpl(
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      description: null == description
+      description: freezed == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       stargazersCount: null == stargazersCount
           ? _value.stargazersCount
           : stargazersCount // ignore: cast_nullable_to_non_nullable
               as int,
-      language: null == language
+      language: freezed == language
           ? _value.language
           : language // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
     ));
   }
 }
@@ -151,12 +151,12 @@ class _$RepositoryImpl implements _Repository {
   @override
   final String name;
   @override
-  final String description;
+  final String? description;
   @override
   @JsonKey(name: 'stargazers_count')
   final int stargazersCount;
   @override
-  final String language;
+  final String? language;
 
   @override
   String toString() {
@@ -199,9 +199,9 @@ class _$RepositoryImpl implements _Repository {
 abstract class _Repository implements Repository {
   const factory _Repository(
       {required final String name,
-      required final String description,
+      required final String? description,
       @JsonKey(name: 'stargazers_count') required final int stargazersCount,
-      required final String language}) = _$RepositoryImpl;
+      required final String? language}) = _$RepositoryImpl;
 
   factory _Repository.fromJson(Map<String, dynamic> json) =
       _$RepositoryImpl.fromJson;
@@ -209,12 +209,12 @@ abstract class _Repository implements Repository {
   @override
   String get name;
   @override
-  String get description;
+  String? get description;
   @override
   @JsonKey(name: 'stargazers_count')
   int get stargazersCount;
   @override
-  String get language;
+  String? get language;
   @override
   @JsonKey(ignore: true)
   _$$RepositoryImplCopyWith<_$RepositoryImpl> get copyWith =>
