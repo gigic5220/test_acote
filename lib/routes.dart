@@ -5,7 +5,7 @@ import 'package:test_acote/view/home_page/home_page.dart';
 abstract class AppPages {
   static final pages = [
     GetPage(
-      name: '/',
+      name: '/home',
       page: () => const HomePage(),
       bindings: [HomePageBinding()]
     )
