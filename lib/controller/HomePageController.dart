@@ -81,7 +81,7 @@ class HomePageController extends GetxController {
   void onTapUserItem({
     required int userId
   }) => Get.toNamed(
-    '/detail',
+    '/home/detail',
     arguments: {
       'id': userId
     }

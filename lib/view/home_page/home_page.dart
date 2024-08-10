@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:test_acote/controller/HomePageController.dart';
+import 'package:test_acote/layout/custom_appbar.dart';
 import 'package:test_acote/model/user.dart';
 import 'package:test_acote/widget/common/custom_cached_network_image_widget.dart';
 
@@ -10,13 +11,8 @@ class HomePage extends GetView<HomePageController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          '사용자 목록',
-          style: TextStyle(
-            fontSize: 20,
-          ),
-        ),
+      appBar: const CustomAppbar(
+        title: '사용자 목록'
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
