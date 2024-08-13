@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:test_acote/controller/HomePageController.dart';
 import 'package:test_acote/layout/custom_appbar.dart';
-import 'package:test_acote/model/user.dart';
 import 'package:test_acote/widget/common/common_paging_loading_widget.dart';
-import 'package:test_acote/widget/common/custom_cached_network_image_widget.dart';
 import 'package:test_acote/widget/common/loading_spinner_widget.dart';
+import 'package:test_acote/widget/home_page/user_list_widget.dart';
 
 class HomePage extends GetView<HomePageController> {
   const HomePage({super.key});
@@ -26,18 +25,28 @@ class HomePage extends GetView<HomePageController> {
                   child: LoadingSpinnerWidget(),
                 );
               } else {
-                return ListView.builder(
-                  controller: controller.scrollController,
-                  itemBuilder: (context, index) => _userListItem(
-                    user: controller.getUserList[index],
-                    userListItemIndex: index,
-                    adBannerLocationIndex: controller.getAdBannerLocationIndex,
-                    adBannerImageUrl: controller.getAdBannerImageUrl(),
-                    onTapUserItem: () => controller.onTapUserItem(userName: controller.getUserList[index].login),
-                    onTapAdBanner: () => controller.onTapAdBanner(targetUrl: controller.getAdBannerBrowserTargetUrl())
-                  ),
-                  itemCount: controller.getUserList.length
-                );
+                return Obx(() {
+                  if (controller.getUserList.isNotEmpty) {
+                    return UserListWidget(
+                      scrollController: controller.scrollController,
+                      userList: controller.getUserList,
+                      adBannerLocationIndex: controller.getAdBannerLocationIndex,
+                      adBannerImageUrl: controller.getAdBannerImageUrl(),
+                      onTapUserItem: ({required int index}) => controller.onTapUserItem(userName: controller.getUserList[index].login),
+                      onTapAdBanner: () => controller.onTapAdBanner(targetUrl: controller.getAdBannerBrowserTargetUrl())
+                    );
+                  } else {
+                    return const Center(
+                      child: Text(
+                        '유저가 존재하지 않습니다',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w400
+                        ),
+                      )
+                    );
+                  }
+                });
               }
             }),
             Positioned(
@@ -58,85 +67,6 @@ class HomePage extends GetView<HomePageController> {
           ],
         )
       )
-    );
-  }
-
-  Widget _userListItem({
-    required User user,
-    required int userListItemIndex,
-    required int adBannerLocationIndex,
-    required String adBannerImageUrl,
-    required void Function() onTapUserItem,
-    required void Function() onTapAdBanner
-  }) {
-    return Column(
-      children: [
-        GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: onTapUserItem,
-          child: Container(
-            margin: const EdgeInsets.only(bottom: 20),
-            child: Row(
-              children: [
-                ClipOval(
-                  child: SizedBox(
-                    width: 40,
-                    height: 40,
-                    child: CustomCachedNetworkImageWidget(
-                      imageUrl: user.avatarUrl,
-                    )
-                  ),
-                ),
-                const SizedBox(width: 15),
-                Column(
-                  children: [
-                    Text(
-                      user.login,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700
-                      ),
-                    )
-                  ],
-                )
-              ],
-            ),
-          ),
-        ),
-        if ((userListItemIndex + 1) % adBannerLocationIndex == 0) ...[
-          Container(
-            margin: const EdgeInsets.only(bottom: 20),
-            child: _adBannerWidget(
-              onTapAdBanner: onTapAdBanner,
-              bannerUrl: adBannerImageUrl
-            )
-          )
-        ]
-      ],
-    );
-  }
-
-  Widget _adBannerWidget({
-    required String bannerUrl,
-    required void Function() onTapAdBanner
-  }) {
-    final double imageRatio = 100 / 500;
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final double maxWidth = constraints.maxWidth;
-        return GestureDetector(
-          onTap: onTapAdBanner,
-          child: Container(
-            margin: const EdgeInsets.symmetric(vertical: 10),
-            width: maxWidth,
-            height: maxWidth * imageRatio,
-            child: CustomCachedNetworkImageWidget(
-              imageUrl: bannerUrl,
-            )
-          )
-        );
-      }
     );
   }
 }
