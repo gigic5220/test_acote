@@ -25,14 +25,28 @@ class HomePage extends GetView<HomePageController> {
                   child: LoadingSpinnerWidget(),
                 );
               } else {
-                return UserListWidget(
-                  scrollController: controller.scrollController,
-                  userList: controller.getUserList,
-                  adBannerLocationIndex: controller.getAdBannerLocationIndex,
-                  adBannerImageUrl: controller.getAdBannerImageUrl(),
-                  onTapUserItem: ({required int index}) => controller.onTapUserItem(userName: controller.getUserList[index].login),
-                  onTapAdBanner: () => controller.onTapAdBanner(targetUrl: controller.getAdBannerBrowserTargetUrl())
-                );
+                return Obx(() {
+                  if (controller.getUserList.isNotEmpty) {
+                    return UserListWidget(
+                      scrollController: controller.scrollController,
+                      userList: controller.getUserList,
+                      adBannerLocationIndex: controller.getAdBannerLocationIndex,
+                      adBannerImageUrl: controller.getAdBannerImageUrl(),
+                      onTapUserItem: ({required int index}) => controller.onTapUserItem(userName: controller.getUserList[index].login),
+                      onTapAdBanner: () => controller.onTapAdBanner(targetUrl: controller.getAdBannerBrowserTargetUrl())
+                    );
+                  } else {
+                    return const Center(
+                      child: Text(
+                        '유저가 존재하지 않습니다',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w400
+                        ),
+                      )
+                    );
+                  }
+                });
               }
             }),
             Positioned(

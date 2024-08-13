@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:test_acote/model/user.dart';
 import 'package:test_acote/widget/common/custom_cached_network_image_widget.dart';
 
@@ -23,7 +24,6 @@ class UserListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      shrinkWrap: true,
       controller: scrollController,
       itemBuilder: (context, index) => _userListItem(
         user: userList[index],
